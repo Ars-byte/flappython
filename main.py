@@ -43,10 +43,16 @@ def create_pipe():
     top_pipe = pygame.Rect(SCREEN_WIDTH, 0, PIPE_WIDTH, random_pipe_pos - PIPE_GAP)
     return bottom_pipe, top_pipe
 
-def move_pipes(pipes):
+def move_pipes(pipes, passed_ids_set):
+    new_pipes = []
     for pipe in pipes:
         pipe.centerx -= PIPE_SPEED
-    return [pipe for pipe in pipes if pipe.right > -50]
+        if pipe.right > -50:
+            new_pipes.append(pipe)
+        else:
+            passed_ids_set.discard(id(pipe))
+
+    return new_pipes, passed_ids_set
 
 def draw_pipes(screen, pipes):
     for pipe_rect in pipes:
@@ -108,7 +114,6 @@ except pygame.error as e:
     bird_surface = None
 
 try:
-
     loaded_background = pygame.image.load('background.png').convert()
     background_surface = pygame.transform.scale(loaded_background, (SCREEN_WIDTH, SCREEN_HEIGHT))
 except pygame.error as e:
@@ -154,7 +159,7 @@ while running:
         bird_y += bird_velocity
         bird_rect.y = int(bird_y)
 
-        pipe_list = move_pipes(pipe_list)
+        pipe_list, passed_pipes_ids = move_pipes(pipe_list, passed_pipes_ids)
         
         score, passed_pipes_ids = update_score(score, pipe_list, bird_rect, passed_pipes_ids)
         if score > high_score:
