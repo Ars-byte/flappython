@@ -62,3 +62,8 @@ install python: ***sudo apt install python3***
 Install Pygame: ***pip install pygame***
 
 Run the script: python main.py
+
+
+## Or 
+
+Execute the .exe 
